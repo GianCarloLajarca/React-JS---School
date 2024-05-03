@@ -20,6 +20,6 @@ const ModalError = ({position}) => {
         </div>
     </ModalWrapper>
   )
-}
+}  
 
 export default ModalError

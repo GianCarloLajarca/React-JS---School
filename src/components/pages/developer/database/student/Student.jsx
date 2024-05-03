@@ -13,10 +13,20 @@ import ModalError from '../../../../partials/modals/ModalError'
 import ModalValidate from '../../../../partials/modals/ModalValidate'
 import ModalConfirm from '../../../../partials/modals/ModalConfirm'
 import SpinnerWindow from '../../../../partials/spinners/SpinnerWindow'
+import useQueryData from '../../../../custom-hook/useQueryData'
 
 const Student = () => {
-
     const [showInfo, setShowInfo] = React.useState(false);
+    const {
+        isLoading,
+        isFetching,
+        error,
+        data: student,
+      } = useQueryData(
+        "/v1/student", // endpoint
+        "get", // method
+        "student" // key
+      );
 
   return (
     <>
@@ -46,7 +56,8 @@ const Student = () => {
                     </button>
                 </div>
 
-                <StudentTable showInfo={showInfo} setShowInfo={setShowInfo}/>
+                <StudentTable showInfo={showInfo} setShowInfo={setShowInfo} isLoading={isLoading} 
+                student={student}/>
             </div>
             <DatabaseInformation showInfo={showInfo}/>
         </div>  
