@@ -6,6 +6,8 @@ Class Staff {
     public $staff_class;
     public $staff_age;
     public $staff_is_active;
+    public $staff_email;
+    public $staff_gender;
     public $staff_created;
     public $staff_datetime;
 
@@ -25,12 +27,16 @@ Class Staff {
              $sql .= "staff_class, ";
              $sql .= "staff_age, ";
              $sql .= "staff_is_active, ";
+             $sql .= "staff_email, ";
+             $sql .= "staff_gender, ";
              $sql .= "staff_created, ";
              $sql .= "staff_datetime ) values ( ";
              $sql .= ":staff_name, ";
              $sql .= ":staff_class, ";
              $sql .= ":staff_age, ";
              $sql .= ":staff_is_active, ";
+             $sql .= ":staff_email, ";
+             $sql .= ":staff_gender, ";
              $sql .= ":staff_created, ";
              $sql .= ":staff_datetime ) ";
              $query = $this->connection->prepare($sql);
@@ -39,6 +45,8 @@ Class Staff {
                 "staff_class" => $this->staff_class,
                 "staff_age" => $this->staff_age,
                 "staff_is_active" => $this->staff_is_active,
+                "staff_email" => $this->staff_email,
+                "staff_gender" => $this->staff_gender,
                 "staff_created" => $this->staff_created,
                 "staff_datetime" => $this->staff_datetime,
              ]);
@@ -85,6 +93,8 @@ Class Staff {
             $sql .= "staff_name = :staff_name, ";
             $sql .= "staff_age = :staff_age, ";
             $sql .= "staff_class = :staff_class, ";
+            $sql .= "staff_email = :staff_email, ";
+            $sql .= "staff_gender = :staff_gender, ";
             $sql .= "staff_datetime = :staff_datetime ";
             $sql .= "where staff_aid  = :staff_aid ";
             $query = $this->connection->prepare($sql);
@@ -92,6 +102,8 @@ Class Staff {
                 "staff_name" => $this->staff_name,
                 "staff_age" => $this->staff_age,
                 "staff_class" => $this->staff_class,
+                "staff_email" => $this->staff_email,
+                "staff_gender" => $this->staff_gender,
                 "staff_datetime" => $this->staff_datetime,
                 "staff_aid" => $this->staff_aid,
             ]);
