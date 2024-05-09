@@ -15,26 +15,38 @@ import ModalConfirm from '../../../../partials/modals/ModalConfirm'
 import SpinnerWindow from '../../../../partials/spinners/SpinnerWindow'
 import useQueryData from '../../../../custom-hook/useQueryData'
 import Toast from '../../../../partials/Toast'
+import Searchbar from './Searchbar'
+import { StoreContext } from '../../../../../store/StoreContext'
+import { setIsAdd } from '../../../../../store/StoreAction'
+
 
 const Student = () => {
+    const { store, dispatch } = React.useContext(StoreContext);
     const [showInfo, setShowInfo] = React.useState(false);
-    const [isAdd, setIsAdd] = React.useState(false);
+    // const [isAdd, setIsAdd] = React.useState(false);
     const [isSuccess, setIsSuccess] = React.useState(false);
     const [message, setMessage] = React.useState('');
     const [itemEdit, setItemEdit] = React.useState(null);
+    const [studentInfo, setStudentInfo] = React.useState('');
+    const [isSearch, setIsSeach] = React.useState(false)
+    const [keyword, setKeyword] = React.useState('');
+
     const {
         isLoading,
         isFetching,
         error,
         data: student,
       } = useQueryData(
-        "/v1/student", // endpoint
-        "get", // method
-        "student" // key
+        isSearch ? "/v1/student/search" : "/v1/student", // endpoint
+        isSearch ? "post" : "get", // method
+        "student", // key
+        {
+            searchValue: keyword
+        }
       );
 
       const handleAdd = () => {
-            setIsAdd(true)
+            dispatch(setIsAdd(true));
             setItemEdit(null)
       }
 
@@ -48,11 +60,8 @@ const Student = () => {
                 <div className={`main-wrapper px-4 transition-all py-3 ${showInfo ? "w-3/4" : "w-full"}`}>
                 <div className='flex justify-between items-center'>
                     <h1>Student Database</h1>
-                    <form action="" className='relative'>
-                        <input type="text" placeholder='Search Student' className='p-1 px-3 pl-10 outline-none border border-stone-800 rounded-md placeholder:text-white 
-                        placeholder:opacity-20 bg-secondary'/>
-                        <CiSearch className='absolute top-2 left-2 z-20 text-white text-2xl opacity-20'/>
-                    </form>
+                    <Searchbar setIsSeach={setIsSeach} setKeyword={setKeyword}/>
+                    
                 </div>
 
                 <div className='tab flex justify-between items-center mt-8 border-b border-line mb-8'>
@@ -66,16 +75,17 @@ const Student = () => {
                     </button>
                 </div>
 
-                <StudentTable showInfo={showInfo} setShowInfo={setShowInfo} isLoading={isLoading} 
-                student={student} setItemEdit={setItemEdit} setIsAdd={setIsAdd}/>
+                <StudentTable setStudentInfo={setStudentInfo} showInfo={showInfo} setShowInfo={setShowInfo} isLoading={isLoading} 
+                student={student} setItemEdit={setItemEdit} />
             </div>
-            <DatabaseInformation showInfo={showInfo}/>
+            <DatabaseInformation studentInfo={studentInfo} setShowInfo={setShowInfo}/>
         </div>  
     </main>
     </section>
-{isAdd && <ModalAddStudent setIsAdd={setIsAdd} setIsSuccess={setIsSuccess} setMessage={setMessage} itemEdit={itemEdit}/>}
 
-{isSuccess && <Toast setIsSuccess={setIsSuccess} message={message}/>}
+{store.isAdd && <ModalAddStudent itemEdit={itemEdit}/>}
+
+{store.success && <Toast/>}
 
 {/* <ModalAddStudent/> */}
 {/* <ModalError position="center"/> */}

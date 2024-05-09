@@ -7,24 +7,31 @@ import SpinnerFetching from '../../../../partials/spinners/SpinnerFetching'
 import ModalConfirm from '../../../../partials/modals/ModalConfirm'
 import ModalDelete from '../../../../partials/modals/ModalDelete'
 import Toast from '../../../../partials/Toast'
+import { StoreContext } from '../../../../../store/StoreContext'
+import { setIsAdd, setIsShow, setIsDelete, setIsActive } from '../../../../../store/StoreAction'
 
-const StudentTable = ({setShowInfo, showInfo, student, isLoading, setItemEdit, setIsAdd }) => {
-    const [isActive, setIsActive] = React.useState(false);
+const StudentTable = ({showInfo, student, isLoading, setItemEdit, setStudentInfo }) => {
+    const {store, dispatch} = React.useContext(StoreContext)
+    // const [isActive, setIsActive] = React.useState(false);
     const [isArchiving, setIsArchiving] = React.useState(0);
-    const [isDelete, setIsDelete] = React.useState(false);
+    // const [isDelete, setIsDelete] = React.useState(false);
     const [isSuccess, setIsSuccess] = React.useState(false);
     const [message, setMessage] = React.useState('');
     const [id, setId] = React.useState('');
-    const handleShowInfo = () => setShowInfo(!showInfo);
+
+    const handleShowInfo = (item) => {
+        setStudentInfo(item)
+        dispatch(setIsShow(true))
+    };
     let counter = 1;
 
     const handleEdit = (item) => {
-        setIsAdd(true)
+        dispatch(setIsAdd(true))
         setItemEdit(item)
     }
 
     const handleActive = (item) => {
-        setIsActive(true);
+        dispatch(setIsActive(true));
         setId(item.student_aid)
         setIsDelete(0)
     }
@@ -34,7 +41,7 @@ const StudentTable = ({setShowInfo, showInfo, student, isLoading, setItemEdit, s
         setIsArchiving(1)
     }
     const handleDelete = (item) => {
-        setIsDelete(true);
+        dispatch(setIsDelete(true))
         setId(item.student_aid)
     }
 
@@ -73,7 +80,7 @@ const StudentTable = ({setShowInfo, showInfo, student, isLoading, setItemEdit, s
                 )}
              
                 {student?.data.map((item, key) => (
-                        <tr onDoubleClick={handleShowInfo} key={key}>
+                        <tr onDoubleClick={() => handleShowInfo(item)} key={key}>
                             <td>{counter++}</td>
                             <td>{item.student_name}</td>
                             <td>{item.student_class}</td>
@@ -102,10 +109,10 @@ const StudentTable = ({setShowInfo, showInfo, student, isLoading, setItemEdit, s
 
         </table>
     </div>
-        {isActive && <ModalConfirm position="center" setIsSuccess={setIsSuccess} setMessage={setMessage} setIsActive={setIsActive} queryKey="student" endpoint={`/v1/student/active/${id}`} 
+        {store.isActive && <ModalConfirm position="center" queryKey="student" endpoint={`/v1/student/active/${id}`} 
         isArchiving={isArchiving}/>}
 
-        {isDelete && <ModalDelete position="center" setIsSuccess={setIsSuccess} setMessage={setMessage} setIsDelete={setIsDelete} endpoint={`/v1/student/${id}`} 
+        {store.isDelete && <ModalDelete position="center" endpoint={`/v1/student/${id}`} 
         queryKey="student"/>}
 
         {isSuccess && <Toast setIsSuccess={setIsSuccess} message={message}/>}

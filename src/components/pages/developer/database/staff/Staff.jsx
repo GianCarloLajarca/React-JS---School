@@ -4,14 +4,21 @@ import Header from '../../../../partials/Header'
 import { CiSearch } from 'react-icons/ci'
 import { Link } from 'react-router-dom'
 import { FiPlus } from 'react-icons/fi'
-import DatabaseInformation from '../DatabaseInformation'
 import StaffTable from './StaffTable'
 import useQueryData from '../../../../custom-hook/useQueryData'
+import DatabaseInformationStaff from '../DatabaseInformationStaff'
+import ModalAddStaff from './ModalAddStaff'
+import Toast from '../../../../partials/Toast'
 
 
 const Staff = () => {
-
     const [showInfo, setShowInfo] = React.useState(false);
+    const [isAdd, setIsAdd] = React.useState(false);
+    const [isSuccess, setIsSuccess] = React.useState(false);
+    const [message, setMessage] = React.useState('');
+    const [itemEdit, setItemEdit] = React.useState(null);
+    const [staffInfo, setStaffInfo] = React.useState('');
+
     const {
         isLoading,
         isFetching,
@@ -22,6 +29,11 @@ const Staff = () => {
         "get", // method
         "staff" // key
       );
+
+      const handleAdd = () => {
+        setIsAdd(true)
+        setItemEdit(null)
+  }
 
   return (
     <>
@@ -46,20 +58,24 @@ const Staff = () => {
                         <li className='tab-link'><Link to="/database/teacher">Teacher</Link></li>
                         <li className='tab-link active'><Link to="/database/staff">Staff</Link></li>
                     </ul>
-                    <button className='btn btn--accent'>
+                    <button className='btn btn--accent' onClick={handleAdd}>
                         <FiPlus/> New
                     </button>
                 </div>
 
-                <StaffTable showInfo={showInfo} setShowInfo={setShowInfo} isLoading={isLoading} 
-                staff={staff}/>
+                <StaffTable setStaffInfo={setStaffInfo} showInfo={showInfo} setShowInfo={setShowInfo} isLoading={isLoading} 
+                staff={staff} setItemEdit={setItemEdit} setIsAdd={setIsAdd}/>
             </div>
-            <DatabaseInformation showInfo={showInfo}/>
+
+            <DatabaseInformationStaff showInfo={showInfo} staffInfo={staffInfo} setShowInfo={setShowInfo}/>
         </div>  
     </main>
-
-
 </section>
+
+{isAdd && <ModalAddStaff setIsAdd={setIsAdd} setIsSuccess={setIsSuccess} setMessage={setMessage} itemEdit={itemEdit}/>}
+
+{isSuccess && <Toast setIsSuccess={setIsSuccess} message={message}/>}
+
 {/* <ModalAddStaff/> */}
 {/* <ModalError position="center"/> */}
 {/* <ModalValidate position="center"/> */}
